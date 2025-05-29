@@ -267,6 +267,12 @@ async def upload_avatar(file: UploadFile = File(...), token: str = Depends(oauth
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
+    extensions = [".png", ".jpg", ".jpeg", ".webp"]
+    for ext in extensions:
+        old_path = os.path.join(UPLOAD_DIR, f"{user['_id']}{ext}")
+        if os.path.exists(old_path):
+            os.remove(old_path)
+
     file_extension = os.path.splitext(file.filename)[1]
     file_path = os.path.join(UPLOAD_DIR, f"{user['_id']}{file_extension}")
 
@@ -274,17 +280,13 @@ async def upload_avatar(file: UploadFile = File(...), token: str = Depends(oauth
         content = await file.read()
         buffer.write(content)
 
-    await users.update_one(
-        {"email": email},
-        {"$set": {"avatar_path": file_path}}
-    )
-
     return {"msg": "Avatar uploaded"}
 
 @app.get("/avatar/{user_id}")
 def get_avatar(user_id: str):
-    user = users.find_one({"_id": ObjectId(user_id)})
-    if not user or "avatar_path" not in user:
-        return FileResponse("default_avatar.png")
-
-    return FileResponse(user["avatar_path"]) 
+    extensions = [".png", ".jpg", ".jpeg", ".webp"]
+    for ext in extensions:
+        avatar_path = os.path.join(UPLOAD_DIR, f"{user_id}{ext}")
+        if os.path.exists(avatar_path):
+            return FileResponse(avatar_path)
+    raise HTTPException(status_code=404, detail="Avatar not found")

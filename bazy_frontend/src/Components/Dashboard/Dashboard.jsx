@@ -50,7 +50,11 @@ function Dashboard() {
       <div className="dashboard-content">
         <div className="user-floating-header">
           <div className="user-hover-area">
-            <img src={`http://localhost:8000/avatar/${user._id}`} alt="avatar" className="dashboard-avatar" />
+            <img
+              src={`http://localhost:8000/avatar/${user._id}?t=${Date.now()}`}
+              alt="avatar"
+              className="dashboard-avatar"
+            />
             <span className="username">{user?.username || "Użytkownik"}</span>
             <div className="dropdown-menu">
               <div className="dropdown-item" onClick={() => navigate('/settings')}>
