@@ -38,4 +38,9 @@ bazy_backend/*.pyc
 bazy_backend/well.py
 bazy_backend/well2.py
 bazy_backend/getbooks.py
-bazy_backend/.env 
+bazy_backend/.env
+
+**/test.py
+**/well.py
+**/well2.py
+.env 
